@@ -1,0 +1,81 @@
+{% extends "layout.html" %}
+{% block body %}
+
+<br />
+{% if patient is undefined %}
+<h2>Create Patient</h2>
+{% else %}
+<h2>Edit Patient</h2>
+<br />
+{% endif %}
+
+
+<form {% if patient is undefined %} action="{{ url_for('patientEntries') }}" {% else %}
+    action="{{ url_for('patientEntries',  id=patient.id ) }}" {% endif %} method=post class=add-entry>
+    <div class="form-group">
+        <label for="InputFirstName">First Name</label>
+        <input type="text" class="form-control" id="inputFirstName" name=firstname {% if patient is undefined %}
+            value="" {% else %} value="{{ patient.first_name }}" {% endif %}>
+    </div>
+
+    <div class="form-group">
+        <label for="InputLastName">Last Name</label>
+        <input type="text" class="form-control" id="inputLastName" name=lastname {% if patient is undefined %} value=""
+            {% else %} value="{{ patient.last_name }}" {% endif %}>
+    </div>
+
+    <div class="form-group">
+        <label for="inputSex">Sex</label>
+        <select class="form-control" id="inputSex" name=sex>
+            {% if patient is defined and patient.sex == "0" %}
+            <option value="0" selected>Female</option>
+            {% else %}
+            <option value="0">Female</option>
+            {% endif %}
+
+            {% if patient is defined and patient.sex == "1" %}
+            <option value="1" selected>Male</option>
+            {% else %}
+            <option value="1">Male</option>
+            {% endif %}
+
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="InputBirthPlace">Birth Place</label>
+        <input type="text" class="form-control" id="inputBirthPlace" name=birthplace {% if patient is undefined %}
+            value="" {% else %} value="{{ patient.birth_place }}" {% endif %}>
+    </div>
+
+    <div class="form-group">
+        <label for="InputBirthDate">Birth Date</label>
+        <div class="datepicker date input-group">
+            <input type="text" placeholder="Choose Date" class="form-control" id="InputBirthDate" name="birthdate" {% if
+                patient is undefined %} value="" {% else %} value="{{ patient.birth_date }}" {% endif %}>
+            <div class="input-group-append">
+                <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+            </div>
+        </div>
+    </div>
+
+    {% if patient is defined %}
+    <button type="submit" class="btn btn-primary">Update</button>
+    {% else %}
+    <button type="submit" class="btn btn-primary">Create</button>
+    {% endif %}
+
+</form>
+
+<script>
+    $(function () {
+        $('.datepicker').datepicker({
+            language: "es",
+            autoclose: true,
+            format: "dd/mm/yyyy"
+        });
+    });
+
+</script>
+
+{% endblock %}

@@ -1,0 +1,51 @@
+{% extends "layout.html" %}
+
+{% block body %}
+
+<br />
+<h2>List Catalog</h2>
+
+<a class="btn btn-primary float-right" href="{{ url_for('catalogEntries') }}">Create Catalog</a>
+<br />
+<br />
+<br />
+
+<table id="data" class="table table-striped">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Category</th>
+            <th>Sub Category</th>
+            <th>Description</th>
+            <th>Price</th>
+            <th>Billable</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for catalog in catalogs %}
+        <tr>
+            <td>{{ catalog.name }}</td>
+            <td>{{ catalog.category }}</td>
+            <td>{{ catalog.subcategory }}</td>
+            <td>{{ catalog.desc }}</td>
+            <td>{{ catalog.price }}</td>
+            <td>{{ catalog.billable }}</td>
+            <td>
+                <button><a style="color: #000000;"
+                        href="{{ url_for('catalogEntries' ,  id=catalog.id) }}">Edit</a></button>
+                &nbsp;
+                <button onClick="">
+                    Delete
+                </button>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<script>
+    $('#data').DataTable();
+</script>
+
+{% endblock %}

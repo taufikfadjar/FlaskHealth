@@ -1,0 +1,20 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+flask = "~=1.1.4"
+flask-sqlalchemy = "*"
+flask-script = "*"
+markupsafe = "==2.0.1"
+sqlalchemy = "==1.4"
+black = "*"
+faker = "*"
+pandas = "*"
+openpyxl = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.11"

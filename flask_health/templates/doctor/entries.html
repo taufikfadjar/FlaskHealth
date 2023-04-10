@@ -1,0 +1,37 @@
+{% extends "layout.html" %}
+{% block body %}
+
+<br />
+
+{% if doctor is undefined %}
+<h2>Create Doctor</h2>
+<br />
+{% else %}
+<h2>Edit Doctor</h2>
+<br />
+{% endif %}
+
+
+<form {% if doctor is undefined %} action="{{ url_for('doctorEntries') }}" {% else %}
+    action="{{ url_for('doctorEntries',  id=doctor.id ) }}" {% endif %} method=post class=add-entry>
+    <div class="form-group">
+        <label for="inputName">Full Name</label>
+        <input type="text" class="form-control" id="inputName" name=name {% if doctor is undefined %} value="" {% else
+            %} value="{{ doctor.name }}" {% endif %}>
+    </div>
+
+
+    {% if doctor is defined %}
+    <button type="submit" class="btn btn-primary">Update</button>
+    {% else %}
+    <button type="submit" class="btn btn-primary">Create</button>
+    {% endif %}
+
+</form>
+
+<script>
+
+
+</script>
+
+{% endblock %}
