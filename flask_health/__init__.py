@@ -7,4 +7,4 @@ app.config.from_object("flask_health.config")
 
 db = SQLAlchemy(app)
 
-from flask_health.views import account, home, patient, doctor, catalog, order
+from flask_health.views import account, home, patient, doctor, catalog, registration
