@@ -10,8 +10,10 @@ import uuid, datetime, copy
 
 @app.route("/registration", methods=["GET"])
 def registrationList():
-    registrationList = []
-    return render_template("registration/list.html", registrationList=registrationList)
+    patients = Order.query.join(Patient).all()
+    print(patients)
+
+    return render_template("registration/list.html", registrationList=patients)
 
 
 @app.route("/registration/entry/", methods=["GET", "POST"])
@@ -32,7 +34,6 @@ def registrationEntries(id=""):
         patientDict[patient.id] = patient.first_name + " " + patient.last_name
 
     if request.method == "POST" and id == "":
-
         getRegistrationDate = datetime.datetime.strptime(
             request.form["order_date"], "%d/%m/%Y"
         )
