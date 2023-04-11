@@ -36,7 +36,7 @@ def registrationList():
                 order.order_no,
                 order.order_date.strftime("%d/%m/%Y"),
                 order.payment_method,
-                patient.first_name + patient.last_name,
+                patient.first_name + " " + patient.last_name,
                 doctor.name,
                 orderStatus,
             )
@@ -99,7 +99,7 @@ def registrationEntries(id=""):
         order.doctor_id = request.form["doctor_id"]
 
         if order.order_steps == 1:
-            newRegistration.order_status = request.form["order_status"]
+            order.order_status = request.form["order_status"]
 
         order.updated_by = session.get("username")
         order.updated_at = datetime.datetime.now()

@@ -7,7 +7,7 @@ class RegistrationViewModel:
         payment_method,
         patient_name,
         doctor_name,
-        sub_status,
+        status,
     ):
         self.id = id
         self.order_no = order_no
@@ -15,4 +15,4 @@ class RegistrationViewModel:
         self.payment_method = payment_method
         self.patient_name = patient_name
         self.doctor_name = doctor_name
-        self.sub_status = sub_status
+        self.status = status
