@@ -23,15 +23,22 @@ def registrationList():
     registrationList = []
 
     for order, patient, doctor in result:
+        orderStatus = ""
+
+        if order.order_steps == 1:
+            orderStatus = order.order_status
+        else:
+            orderStatus = "Complete"
+
         registrationList.append(
             RegistrationViewModel(
                 order.id,
                 order.order_no,
-                order.order_date,
+                order.order_date.strftime("%d/%m/%Y"),
                 order.payment_method,
                 patient.first_name + patient.last_name,
                 doctor.name,
-                order.order_sub_status,
+                orderStatus,
             )
         )
 
@@ -46,9 +53,8 @@ def registrationEntries(id=""):
 
     patients = Patient.query.all()
     doctors = Doctor.query.all()
-    orderStatusList = ["Registration", "General Checkup", "Treatment", "Payment"]
     paymentMethods = ["Cash", "Insurance"]
-    orderSubStatusList = ["Complete", "Cancel"]
+    orderStatusList = ["Complete", "Cancel"]
     dateNow = datetime.datetime.now().strftime("%d/%m/%Y")
 
     patientDict = {}
@@ -76,22 +82,54 @@ def registrationEntries(id=""):
         newRegistration.isDeleted = False
         newRegistration.created_by = session.get("username")
         newRegistration.created_at = datetime.datetime.now()
-        newRegistration.order_status = "Registration"
-        newRegistration.order_sub_status = "Complete"
+        newRegistration.order_steps = 1
+        newRegistration.order_status = "Complete"
         newRegistration.order_no = count + 1
 
         db.session.add(newRegistration)
         db.session.commit()
         flash("A new registration has been created.")
 
-        return redirect(url_for("registrationEntries"))
+        return redirect(url_for("registrationList"))
+
+    if request.method == "POST" and id != "":
+        order = Order.query.get(id)
+
+        order.payment_method = request.form["payment_method"]
+        order.doctor_id = request.form["doctor_id"]
+
+        if order.order_steps == 1:
+            newRegistration.order_status = request.form["order_status"]
+
+        order.updated_by = session.get("username")
+        order.updated_at = datetime.datetime.now()
+
+        db.session.merge(order)
+        db.session.commit()
+
+        flash("A registration has been updated.")
+        return redirect(url_for("registrationList"))
+
+    if request.method == "GET" and id != "":
+        order = Order.query.get(id)
+        copyOrder = copy.copy(order)
+        copyOrder.order_date = copyOrder.order_date.strftime("%d/%m/%Y")
+
+        return render_template(
+            "registration/entries.html",
+            registration=copyOrder,
+            patientDict=patientDict,
+            doctors=doctors,
+            paymentMethods=paymentMethods,
+            orderStatusList=orderStatusList,
+            dateNow=dateNow,
+        )
 
     return render_template(
         "registration/entries.html",
         patientDict=patientDict,
         doctors=doctors,
-        orderStatusList=orderStatusList,
         paymentMethods=paymentMethods,
-        orderSubStatusList=orderSubStatusList,
+        orderStatusList=orderStatusList,
         dateNow=dateNow,
     )

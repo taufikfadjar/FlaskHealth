@@ -2,23 +2,27 @@
 {% block body %}
 
 <br />
-{% if order is undefined %}
+{% if registration is undefined %}
 <h2>Create Registration</h2>
 {% else %}
-<h2>Edit Order</h2>
+<h2>Update Registration</h2>
 <br />
 {% endif %}
 
 
-<form {% if order is undefined %} action="{{ url_for('registrationEntries') }}" {% else %}
-    action="{{ url_for('registrationEntries',  id=order.id ) }}" {% endif %} method=post class=add-entry>
+<form {% if registration is undefined %} action="{{ url_for('registrationEntries') }}" {% else %}
+    action="{{ url_for('registrationEntries',  id=registration.id ) }}" {% endif %} method=post class=add-entry>
 
     <div class="form-group">
         <label for="inputPatient">Patient</label>
         <select data-placeholder="Choose patient" id="inputPatient" data-allow-clear="1" name="patient_id">
             <option value=""></option>
             {% for x, y in patientDict.items() %}
+            {% if registration is defined and registration.patient_id == x %}
+            <option value="{{ x }}" selected>{{ y }}</option>
+            {% else %}
             <option value="{{ x }}">{{ y }}</option>
+            {% endif %}
             {% endfor %}
         </select>
     </div>
@@ -48,7 +52,11 @@
         <select data-placeholder="Choose doctor" id="inputDoctor" data-allow-clear="1" name="doctor_id">
             <option value=""></option>
             {% for doctor in doctors %}
+            {% if registration is defined and registration.doctor_id == doctor.id %}
+            <option value="{{ doctor.id }}" selected>{{ doctor.name }}</option>
+            {% else %}
             <option value="{{ doctor.id }}">{{ doctor.name }}</option>
+            {% endif %}
             {% endfor %}
         </select>
     </div>
@@ -59,7 +67,11 @@
         <select data-placeholder="Payment Method" id="inputPayment" data-allow-clear="1" name="payment_method">
             <option value=""></option>
             {% for paymentMethod in paymentMethods %}
+            {% if registration is defined and registration.payment_method == paymentMethod %}
+            <option value="{{ paymentMethod }}" selected>{{ paymentMethod }}</option>
+            {% else %}
             <option value="{{ paymentMethod }}">{{ paymentMethod }}</option>
+            {% endif %}
             {% endfor %}
         </select>
     </div>
@@ -68,17 +80,32 @@
         <label for="inputOrderDate">Registration Date</label>
         <div class="datepicker date input-group">
             <input type="text" placeholder="Choose Registration Date" class="form-control" id="inputOrderDate"
-                name="order_date" {% if patient is undefined %} value="{{dateNow}}" {% else %}
-                value="{{ patient.order_date }}" {% endif %}>
+                name="order_date" {% if registration is undefined %} value="{{dateNow}}" {% else %}
+                value="{{ registration.order_date }}" {% endif %}>
             <div class="input-group-append">
                 <span class="input-group-text"><i class="fa fa-calendar"></i></span>
             </div>
         </div>
     </div>
 
+    {% if registration is defined and (registration.order_step == 1 ) %}
+    <div class="form-group">
+        <label for="inputPayment">Registration Status</label>
+        <select data-placeholder="Payment Method" id="inputPayment" data-allow-clear="1" name="payment_method">
+            <option value=""></option>
+            {% for orderStatus in orderStatusList %}
+            {% if registration is defined and registration.order_status == orderStatus %}
+            <option value="{{ orderStatus }}" selected>{{ orderStatus }}</option>
+            {% else %}
+            <option value="{{ orderStatus }}">{{ orderStatus }}</option>
+            {% endif %}
+            {% endfor %}
+        </select>
+    </div>
+    {% endif %}
 
 
-    {% if order is defined %}
+    {% if registration is defined %}
     <button type="submit" class="btn btn-primary">Update</button>
     {% else %}
     <button type="submit" class="btn btn-primary">Create</button>

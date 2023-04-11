@@ -9,6 +9,7 @@ class Order(db.Model):
     payment_method = db.Column(db.String(100))
     total_price = db.Column(db.Integer)
     order_no = db.Column(db.Integer)
+    order_steps = db.Column(db.Integer)
     order_status = db.Column(db.String(100))
     order_sub_status = db.Column(db.String(100))
     doctor_id = db.Column(db.String(36), db.ForeignKey("doctor.id"), nullable=False)
