@@ -6,14 +6,36 @@ from flask_health.models.doctor import Doctor
 from flask_health.models.treatment import Treatment
 from flask_health.models.order import Order
 import uuid, datetime, copy
+from sqlalchemy.orm import subqueryload
+from flask_health.viewmodels.registration import RegistrationViewModel
 
 
 @app.route("/registration", methods=["GET"])
 def registrationList():
-    patients = Order.query.join(Patient).all()
-    print(patients)
+    result = (
+        db.session.query(Order, Patient, Doctor)
+        .select_from(Order)
+        .join(Patient)
+        .join(Doctor)
+        .all()
+    )
 
-    return render_template("registration/list.html", registrationList=patients)
+    registrationList = []
+
+    for order, patient, doctor in result:
+        registrationList.append(
+            RegistrationViewModel(
+                order.id,
+                order.order_no,
+                order.order_date,
+                order.payment_method,
+                patient.first_name + patient.last_name,
+                doctor.name,
+                order.order_sub_status,
+            )
+        )
+
+    return render_template("registration/list.html", registrationList=registrationList)
 
 
 @app.route("/registration/entry/", methods=["GET", "POST"])
