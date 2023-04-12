@@ -1,4 +1,73 @@
 {% extends "layout.html" %}
 {% block body %}
-No Post
+<style>
+    .btn-sq-lg {
+        width: 150px !important;
+        height: 150px !important;
+        margin-left: 5%;
+    }
+
+    .btn-sq {
+        width: 100px !important;
+        height: 100px !important;
+        font-size: 10px;
+    }
+
+    .btn-sq-sm {
+        width: 50px !important;
+        height: 50px !important;
+        font-size: 10px;
+    }
+
+    .btn-sq-xs {
+        width: 25px !important;
+        height: 25px !important;
+        padding: 2px;
+    }
+</style>
+
+<div class="container">
+    <div class="row">
+        <div class="col-lg-12" style="margin-top: 10%;">
+            <p>
+                <a href="{{ url_for('patientList') }}" class="btn btn-sq-lg btn-primary">
+                    <i class="fa fa-user fa-5x"></i><br />
+                    Master Data<br>Patient
+                </a>
+                <a href="{{ url_for('doctorList') }}" class="btn btn-sq-lg btn-success">
+                    <i class="fa fa-address-book-o fa-5x"></i><br />
+                    Master Data <br>Doctor
+                </a>
+                <a href="{{ url_for('catalogList') }}" class="btn btn-sq-lg btn-info">
+                    <i class="fa fa-cubes fa-5x"></i><br />
+                    Master Data <br>Catalog
+                </a>
+                <a href="{{ url_for('registrationList') }}" class="btn btn-sq-lg btn-warning">
+                    <i class="fa fa-calendar-plus-o fa-5x"></i><br />
+                    Registration
+                </a>
+                <a href="{{ url_for('checkUpList') }}" class="btn btn-sq-lg btn-danger">
+                    <i class="fa fa-heartbeat fa-5x"></i><br />
+                    General <br> Check Up </a>
+            </p>
+            <p>
+                <a href="{{ url_for('treatmentList') }}" class="btn btn-sq-lg" style="
+                color: #fff;
+                background-color: #155e20;
+                border-color: #155e20;
+            ">
+                    <i class="fa fa-medkit fa-5x"></i><br />
+                    Treatment
+                </a>
+
+                <a href="#" class="btn btn-sq-lg btn-primary" style=" color: #fff;
+                background-color: #7416a9;
+                border-color: #7416a9;">
+                    <i class="fa fa-shopping-cart fa-5x"></i><br />
+                    Invoice
+                </a>
+            </p>
+        </div>
+    </div>
+</div>
 {% endblock %}
