@@ -14,6 +14,7 @@ class Order(db.Model):
     order_sub_status = db.Column(db.String(100))
     doctor_id = db.Column(db.String(36), db.ForeignKey("doctor.id"), nullable=False)
     treatments = db.relationship("Treatment", backref="order", lazy=True)
+    desc = db.Column(db.Text)
     isDeleted = db.Column(db.Boolean)
     created_at = db.Column(db.DateTime)
     created_by = db.Column(db.String(100))

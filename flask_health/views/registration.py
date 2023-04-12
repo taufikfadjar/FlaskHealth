@@ -6,7 +6,6 @@ from flask_health.models.doctor import Doctor
 from flask_health.models.treatment import Treatment
 from flask_health.models.order import Order
 import uuid, datetime, copy
-from sqlalchemy.orm import subqueryload
 from flask_health.viewmodels.registration import RegistrationViewModel
 
 
@@ -66,9 +65,7 @@ def registrationEntries(id=""):
             request.form["order_date"], "%d/%m/%Y"
         )
 
-        count = Order.query.filter_by(
-            order_date=getRegistrationDate.strftime("%y-%m-%d")
-        ).count()
+        count = Order.query.filter(Order.order_date == getRegistrationDate).count()
 
         newRegistration = Order()
         newRegistration.id = str(uuid.uuid1())

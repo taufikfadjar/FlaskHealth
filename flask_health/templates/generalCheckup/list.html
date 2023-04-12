@@ -1,0 +1,43 @@
+{% extends "layout.html" %}
+
+{% block body %}
+
+<br />
+<h2>List General CheckUp</h2>
+
+
+<table id="data" class="table table-striped">
+    <thead>
+        <tr>
+            <th>Order Date</th>
+            <th>No Order</th>
+            <th>Patient</th>
+            <th>Doctor</th>
+            <th>Payment Method</th>
+            <th>Registration Status</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for checkUp in checkupList %}
+        <tr>
+            <td>{{ checkUp.order_date }}</td>
+            <td>{{ checkUp.order_no }}</td>
+            <td>{{ checkUp.patient_name }}</td>
+            <td>{{ checkUp.doctor_name }}</td>
+            <td></td>
+            <td></td>
+            <td>
+                <button><a style="color: #000000;" href="{{ url_for('registrationEntries' ,  id=checkUp.id) }}">Run
+                        General Check</a></button>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<script>
+    $('#data').DataTable();
+</script>
+
+{% endblock %}
