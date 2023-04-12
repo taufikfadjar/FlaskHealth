@@ -15,4 +15,5 @@ from flask_health.views import (
     catalog,
     registration,
     generalCheckup,
+    treatment,
 )

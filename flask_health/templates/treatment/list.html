@@ -1,0 +1,41 @@
+{% extends "layout.html" %}
+
+{% block body %}
+
+<br />
+<h2>List Treatment</h2>
+
+
+<table id="data" class="table table-striped">
+    <thead>
+        <tr>
+            <th>Order Date</th>
+            <th>No Order</th>
+            <th>Patient</th>
+            <th>Doctor</th>
+            <th>Status</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for treatmentResult in treatmentResultList %}
+        <tr>
+            <td>{{ treatmentResult.order_date }}</td>
+            <td>{{ treatmentResult.order_no }}</td>
+            <td>{{ treatmentResult.patient_name }}</td>
+            <td>{{ treatmentResult.doctor_name }}</td>
+            <td>{{ treatmentResult.order_status }}</td>
+            <td>
+                <button><a style="color: #000000;"
+                        href="{{ url_for('checkUpEntries' ,  id=treatmentResult.id) }}">Treatment</a></button>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<script>
+    $('#data').DataTable();
+</script>
+
+{% endblock %}
