@@ -1,4 +1,5 @@
 from flask_health import db
+from datetime import date
 
 
 class Patient(db.Model):
@@ -25,4 +26,12 @@ class Patient(db.Model):
             self.birth_date,
             self.isDeleted,
             self.created_at,
+        )
+
+    def calculate_age(self):
+        today = date.today()
+        return (
+            today.year
+            - self.birth_date.year
+            - ((today.month, today.day) < (self.birth_date.month, self.birth_date.day))
         )

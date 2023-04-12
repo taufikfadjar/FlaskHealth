@@ -25,3 +25,9 @@ class Order(db.Model):
         return "<Entry id:{} order_date:{} order_status:{}>".format(
             self.id, self.order_date, self.order_status
         )
+
+    def calculate_order_no(self):
+        return str(self.order_no) + "-" + self.order_date.strftime("%d-%m")
+
+    def getFormatOrderDate(self):
+        return self.order_date.strftime("%d/%m/%Y")

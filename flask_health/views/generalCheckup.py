@@ -32,16 +32,17 @@ def checkUpList():
         checkupList.append(
             GeneralCheckViewModel(
                 order.id,
-                order.order_no,
-                order.order_date.strftime("%d/%m/%Y"),
+                order.calculate_order_no(),
+                order.getFormatOrderDate(),
                 patient.first_name + " " + patient.last_name,
                 doctor.name,
+                "",
+                "",
             )
         )
     return render_template("generalCheckup/list.html", checkupList=checkupList)
 
 
-@app.route("/checkup/entry/", methods=["GET", "POST"])
 @app.route("/checkup/entry/<id>", methods=["GET", "POST"])
 def checkUpEntries(id=""):
     if not session.get("logged_in"):
@@ -51,6 +52,28 @@ def checkUpEntries(id=""):
         db.session.query(Catalog).filter(Catalog.category == "General Checkup").all()
     )
 
+    result = (
+        db.session.query(Order, Patient, Doctor)
+        .select_from(Order)
+        .join(Patient)
+        .join(Doctor)
+        .filter(Order.id == id)
+        .all()
+    )
+
+    orderResult = None
+    patientResult = None
+    doctorResult = None
+
+    for order, patient, doctor in result:
+        orderResult = order
+        patientResult = patient
+        doctorResult = doctor
+
     return render_template(
-        "generalCheckup/entries.html", catalogCheckUpList=catalogCheckUpList
+        "generalCheckup/entries.html",
+        catalogCheckUpList=catalogCheckUpList,
+        orderResult=orderResult,
+        patientResult=patientResult,
+        doctorResult=doctorResult,
     )

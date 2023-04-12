@@ -32,8 +32,8 @@ def registrationList():
         registrationList.append(
             RegistrationViewModel(
                 order.id,
-                order.order_no,
-                order.order_date.strftime("%d/%m/%Y"),
+                order.calculate_order_no(),
+                order.getFormatOrderDate(),
                 order.payment_method,
                 patient.first_name + " " + patient.last_name,
                 doctor.name,

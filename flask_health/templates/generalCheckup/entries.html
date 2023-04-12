@@ -5,23 +5,77 @@
 <h2>General Check Up</h2>
 <br />
 
+<style>
+    .card {
+        box-shadow: 0 1px 5px 0 rgba(0, 0, 0, .1), 0 1px 5px 0 rgba(0, 0, 0, .06);
+    }
+
+    .card {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+        word-wrap: break-word;
+        background-color: #fff;
+        background-clip: border-box;
+        border: 0 solid rgba(0, 0, 0, .125);
+        border-radius: .25rem;
+    }
+
+    .card-body {
+        flex: 1 1 auto;
+        min-height: 1px;
+        padding: 1rem;
+    }
+</style>
+
+
+<div class="col-md-12">
+    <div class="card mb-3">
+        <div class="card-header" style="
+        color: black;
+        font-size: 20px;
+        font-weight: bold;">
+            Patient Information
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-sm-3">
+                    <h6 class="mb-0">Full Name</h6>
+                </div>
+                <div class="col-sm-9 text-secondary">
+                    {{ patientResult.first_name + " "+patientResult.last_name }}
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-sm-3">
+                    <h6 class="mb-0">Sex</h6>
+                </div>
+                <div class="col-sm-9 text-secondary">
+                    {% if patientResult.sex == "0": %}
+                    Female
+                    {% else %}
+                    Male
+                    {% endif %}
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-sm-3">
+                    <h6 class="mb-0">Age</h6>
+                </div>
+                <div class="col-sm-9 text-secondary">
+                    {{ patientResult.calculate_age() }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 <form {% if registration is undefined %} action="{{ url_for('registrationEntries') }}" {% else %}
     action="{{ url_for('registrationEntries',  id=registration.id ) }}" {% endif %} method=post class=add-entry>
 
-    <div class="form-group">
-        <label for="inputPatient">Patient</label>
-        <select data-placeholder="Choose patient" id="inputPatient" data-allow-clear="1" name="patient_id">
-            <option value=""></option>
-            {% for x, y in patientDict.items() %}
-            {% if registration is defined and registration.patient_id == x %}
-            <option value="{{ x }}" selected>{{ y }}</option>
-            {% else %}
-            <option value="{{ x }}">{{ y }}</option>
-            {% endif %}
-            {% endfor %}
-        </select>
-    </div>
 
 
 
