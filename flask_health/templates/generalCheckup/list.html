@@ -13,8 +13,7 @@
             <th>No Order</th>
             <th>Patient</th>
             <th>Doctor</th>
-            <th>Payment Method</th>
-            <th>Registration Status</th>
+            <th>Status</th>
             <th>Action</th>
         </tr>
     </thead>
@@ -25,11 +24,10 @@
             <td>{{ checkUp.order_no }}</td>
             <td>{{ checkUp.patient_name }}</td>
             <td>{{ checkUp.doctor_name }}</td>
-            <td></td>
-            <td></td>
+            <td>{{ checkUp.order_status }}</td>
             <td>
-                <button><a style="color: #000000;" href="{{ url_for('checkUpEntries' ,  id=checkUp.id) }}">Run
-                        General Check</a></button>
+                <button><a style="color: #000000;" href="{{ url_for('checkUpEntries' ,  id=checkUp.id) }}">General
+                        Check</a></button>
             </td>
         </tr>
         {% endfor %}

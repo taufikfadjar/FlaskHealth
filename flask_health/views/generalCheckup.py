@@ -36,8 +36,7 @@ def checkUpList():
                 order.getFormatOrderDate(),
                 patient.first_name + " " + patient.last_name,
                 doctor.name,
-                "",
-                "",
+                order.getOrderStatus(2),
             )
         )
     return render_template("generalCheckup/list.html", checkupList=checkupList)
@@ -101,8 +100,10 @@ def checkUpEntries(id=""):
                 db.session.merge(newTreatment)
 
         db.session.commit()
-
         return redirect(url_for("checkUpList"))
+
+    if orderResult.desc == None:
+        orderResult.desc = ""
 
     return render_template(
         "generalCheckup/entries.html",

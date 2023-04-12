@@ -31,3 +31,11 @@ class Order(db.Model):
 
     def getFormatOrderDate(self):
         return self.order_date.strftime("%d/%m/%Y")
+
+    def getOrderStatus(self, desirableSteps):
+        if self.order_steps == desirableSteps:
+            return self.order_status
+        elif self.order_steps > desirableSteps:
+            return "Complete"
+        else:
+            return "Not Submitted"

@@ -37,7 +37,7 @@ def registrationList():
                 order.payment_method,
                 patient.first_name + " " + patient.last_name,
                 doctor.name,
-                orderStatus,
+                order.getOrderStatus(1),
             )
         )
 

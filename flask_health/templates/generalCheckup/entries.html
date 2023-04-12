@@ -73,8 +73,7 @@
     </div>
 </div>
 
-<form {% if registration is undefined %} action="{{ url_for('checkUpEntries') }}" {% else %}
-    action="{{ url_for('checkUpEntries',  id=orderResult.id ) }}" {% endif %} method=post class=add-entry>
+<form action="{{ url_for('checkUpEntries',  id=orderResult.id ) }}" method=post class=add-entry>
 
 
     <div class="col-md-12">
@@ -89,8 +88,18 @@
                 {% for catalogCheckUp in catalogCheckUpList %}
                 <div class="form-group">
                     <label for="Input{{ catalogCheckUp.id }}">{{ catalogCheckUp.name }}</label>
+
+                    {% if orderResult.treatments is defined and orderResult.treatments |length > 0 %}
+                    <input type="text" class="form-control" id="input{{ catalogCheckUp.id }}"
+                        name="{{ catalogCheckUp.id }}" {% for treatresult in orderResult.treatments %} {% if
+                        treatresult.catalog_id==catalogCheckUp.id %} value="{{ treatresult.value }}">
+                    {% endif %}
+                    {% endfor %}
+
+                    {% else %}
                     <input type="text" class="form-control" id="input{{ catalogCheckUp.id }}"
                         name="{{ catalogCheckUp.id }}" value="">
+                    {% endif %}
                 </div>
                 {% endfor %}
             </div>
@@ -110,7 +119,7 @@
                 <div class="form-group">
                     <label for="InputDesc">Desc</label>
                     <textarea class="form-control" id="InputDesc" name=desc
-                        rows="5">{% if orderResult is defined %}{{orderResult.desc}}{% endif %}</textarea>
+                        rows="5">{% if orderResult is defined %}{{orderResult.desc | safe }}{% endif %}</textarea>
                 </div>
 
             </div>
@@ -146,12 +155,12 @@
 
     <br />
 
-    {% if registration is defined %}
+    {% if orderResult.treatments is defined and orderResult.treatments |length > 0 %}
     <button type="submit" class="btn btn-primary">Update</button>
     {% else %}
     <button type="submit" class="btn btn-primary">Create</button>
     {% endif %}
-
+    <br />
 </form>
 
 <script>
