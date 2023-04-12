@@ -82,6 +82,58 @@ def treatmentEntries(id=""):
         patientResult = patient
         doctorResult = doctor
 
+    if request.method == "POST" and id != "":
+
+        orderResult.desc = request.form["desc"]
+
+        if orderResult.order_steps < 3:
+            orderResult.order_steps = 3
+
+        if order.order_steps == 3:
+            orderResult.order_status = request.form["order_status"]
+
+        orderResult.updated_by = session.get("username")
+        orderResult.updated_at = datetime.datetime.now()
+
+        db.session.merge(orderResult)
+        db.session.commit()
+
+        catalogCheckUpIds = []
+        for catalogCheckUp in catalogCheckUpList:
+            catalogCheckUpIds.append(catalogCheckUp.id)
+
+        Treatment.query.filter(
+            and_(
+                Treatment.order_id == orderResult.id,
+                Treatment.catalog_id.not_in(catalogCheckUpIds),
+            )
+        ).delete()
+
+        db.session.commit()
+
+        for catalog, quantity in zip(
+            request.form.getlist("catalog_id"), request.form.getlist("catalog_quantity")
+        ):
+
+            getCatalog = Catalog.query.get(catalog)
+
+            newTreatment = Treatment()
+            newTreatment.catalog_id = catalog
+            newTreatment.id = str(uuid.uuid1())
+            newTreatment.order_id = orderResult.id
+            newTreatment.treatment_date = datetime.datetime.now()
+            newTreatment.value = int(getCatalog.price) * int(quantity)
+            newTreatment.quantity = int(quantity)
+            newTreatment.isDeleted = False
+            newTreatment.created_by = session.get("username")
+            newTreatment.created_at = datetime.datetime.now()
+            db.session.merge(newTreatment)
+
+        db.session.commit()
+
+        flash("A treatment has been updated.")
+        return redirect(url_for("treatmentList"))
+
     if orderResult.desc == None:
         orderResult.desc = ""
 

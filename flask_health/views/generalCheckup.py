@@ -73,8 +73,12 @@ def checkUpEntries(id=""):
 
     if request.method == "POST" and id != "":
         orderResult.desc = request.form["desc"]
-        orderResult.order_steps = 2
-        orderResult.order_status = request.form["order_status"]
+
+        if orderResult.order_steps < 2:
+            orderResult.order_steps = 2
+
+        if order.order_steps == 2:
+            orderResult.order_status = request.form["order_status"]
 
         orderResult.updated_by = session.get("username")
         orderResult.updated_at = datetime.datetime.now()
@@ -111,6 +115,8 @@ def checkUpEntries(id=""):
                 db.session.merge(newTreatment)
 
         db.session.commit()
+
+        flash("A general checkup has been updated.")
         return redirect(url_for("checkUpList"))
 
     if orderResult.desc == None:

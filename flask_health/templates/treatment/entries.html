@@ -104,7 +104,7 @@
     </div>
 </div>
 
-<form action="{{ url_for('checkUpEntries',  id=orderResult.id ) }}" method=post class=add-entry>
+<form action="{{ url_for('treatmentEntries',  id=orderResult.id ) }}" method=post class=add-entry>
 
 
     <div class="col-md-12">
@@ -240,6 +240,11 @@
         });
     }
 
+    function removeLine(element) {
+        var parent = $(element).closest('tr');
+        parent.remove();
+    }
+
     $(function () {
 
         $("#addTreatment").click(function () {
@@ -249,7 +254,7 @@
 
                             <td>
                                 <select data-placeholder="Choose catalog"  data-allow-clear="1"
-                                    name="patient_id">
+                                    name="catalog_id">
                                     <option value=""></option>
                                     <optgroup label="Action">
                                         {% for catalogAction in catalogActionList %}
@@ -272,12 +277,12 @@
                             <td id="typeTreatment"></td>
                             <td id="priceTreatment"></td>
                             <td id="quantityTreatment">
-                                <input type="number" id="inputQuantityTreatment" style="width: 50px;">
+                                <input type="number" id="inputQuantityTreatment" style="width: 50px;" name="catalog_quantity">
                             </td>
                             <td id="totalTreatment">
 
                             </td>
-                            <td>X</td>
+                            <td onclick='removeLine(this)'>X</td>
                         </tr>`;
 
             $("#tblTreatment > tbody ").append(template);
