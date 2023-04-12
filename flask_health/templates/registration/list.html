@@ -3,7 +3,7 @@
 {% block body %}
 
 <br />
-<h2>List Registration</h2>
+<h2><i class="fa fa-calendar-plus-o" aria-hidden="true"></i> List Registration</h2>
 
 <a class="btn btn-primary float-right" href="{{ url_for('registrationEntries') }}">Create Registration</a>
 <br />
@@ -34,10 +34,6 @@
             <td>
                 <button><a style="color: #000000;"
                         href="{{ url_for('registrationEntries' ,  id=registration.id) }}">Edit</a></button>
-                &nbsp;
-                <button onClick="">
-                    Delete
-                </button>
             </td>
         </tr>
         {% endfor %}

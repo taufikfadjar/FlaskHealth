@@ -3,7 +3,7 @@
 {% block body %}
 
 <br />
-<h2>List Patient</h2>
+<h2><i class="fa fa-user" aria-hidden="true"></i> List Patient</h2>
 
 <a class="btn btn-primary float-right" href="{{ url_for('patientEntries') }}">Create Patient</a>
 <br />
@@ -32,13 +32,6 @@
             <td>
                 <button><a style="color: #000000;"
                         href="{{ url_for('patientEntries' ,  id=patient.id) }}">Edit</a></button>
-                &nbsp;
-                <button onClick="">
-                    Delete
-                </button>
-                &nbsp;
-                <button><a style="color: #000000;"
-                        href="{{ url_for('patientEntries' ,  id=patient.id) }}">History</a></button>
             </td>
         </tr>
         {% endfor %}
