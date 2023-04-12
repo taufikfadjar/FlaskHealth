@@ -54,6 +54,14 @@ def treatmentEntries(id=""):
         db.session.query(Catalog).filter(Catalog.category == "General Checkup").all()
     )
 
+    catalogPrescriptionList = (
+        db.session.query(Catalog).filter(Catalog.category == "Prescription").all()
+    )
+
+    catalogActionList = (
+        db.session.query(Catalog).filter(Catalog.category == "Action").all()
+    )
+
     orderStatusList = ["Complete", "Cancel"]
 
     result = (
@@ -84,4 +92,6 @@ def treatmentEntries(id=""):
         patientResult=patientResult,
         doctorResult=doctorResult,
         orderStatusList=orderStatusList,
+        catalogPrescriptionList=catalogPrescriptionList,
+        catalogActionList=catalogActionList,
     )

@@ -113,6 +113,37 @@
             color: black;
             font-size: 20px;
             font-weight: bold;">
+                Action & Prescription
+            </div>
+            <div class="card-body">
+                <table class="table table-hover" id="tblTreatment">
+                    <thead>
+                        <tr>
+                            <th scope="col">Name</th>
+                            <th scope="col">Type</th>
+                            <th scope="col">Price</th>
+                            <th scope="col">Quantity</th>
+                            <th scope="col">Total</th>
+                            <th scope="col">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                    </tbody>
+                </table>
+
+                <a class="btn btn-primary float-left" id="addTreatment" style="color: aliceblue;">Add</a>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-12">
+        <div class="card mb-3">
+            <div class="card-header" style="
+            color: black;
+            font-size: 20px;
+            font-weight: bold;">
                 Log
             </div>
             <div class="card-body">
@@ -165,7 +196,8 @@
 
 <script>
 
-    $(function () {
+    function renderSelect() {
+
         $('select').each(function () {
             $(this).select2({
                 theme: 'bootstrap4',
@@ -175,14 +207,86 @@
                 closeOnSelect: !$(this).attr('multiple'),
             });
         });
-    });
 
+        $('select').each(function () {
+            $(this).on("change", function (e) {
+                var optionSelected = $("option:selected", this);
+                var parent = $(this).closest('tr');
+                var type = $(optionSelected[0]).attr("data-typeTreatment");
+                parent.find("#typeTreatment").html(type);
 
-    $('#inputPatient').on("change", function (e) {
-        console.log(this.value);
-    });
+                var price = $(optionSelected[0]).attr("data-price");
+                parent.find("#priceTreatment").html(price);
+                parent.find("#inputQuantityTreatment").val(1);
+                parent.find("#totalTreatment").html(price);
+            });
+        });
+    }
+
+    function renderQuantity() {
+        $('input[id=inputQuantityTreatment]').on('input', function (e) {
+            try {
+                var parent = $(this).closest('tr');
+                var price = parent.find("#priceTreatment").html();
+                if (price.length > 0 && $(this).val().length > 0) {
+                    parent.find("#totalTreatment").html(price * $(this).val());
+                }
+
+            }
+            catch (err) {
+
+            }
+
+        });
+    }
 
     $(function () {
+
+        $("#addTreatment").click(function () {
+
+
+            var template = `<tr>
+
+                            <td>
+                                <select data-placeholder="Choose catalog"  data-allow-clear="1"
+                                    name="patient_id">
+                                    <option value=""></option>
+                                    <optgroup label="Action">
+                                        {% for catalogAction in catalogActionList %}
+                                        <option value="{{ catalogAction.id }}"
+                                            data-typeTreatment="{{ catalogAction.category }}"
+                                            data-price="{{ catalogAction.price }}">{{catalogAction.name}}</option>
+                                        {% endfor %}
+                                    </optgroup>
+                                    <optgroup label="Prescription">
+                                        {% for catalogPrescription in catalogPrescriptionList %}
+                                        <option value="{{ catalogPrescription.id }}"
+                                            data-typeTreatment="{{ catalogPrescription.category }}"
+                                            data-price="{{ catalogPrescription.price }}">{{
+                                            catalogPrescription.name
+                                            }}</option>
+                                        {% endfor %}
+                                    </optgroup>
+                                </select>
+                            </td>
+                            <td id="typeTreatment"></td>
+                            <td id="priceTreatment"></td>
+                            <td id="quantityTreatment">
+                                <input type="number" id="inputQuantityTreatment" style="width: 50px;">
+                            </td>
+                            <td id="totalTreatment">
+
+                            </td>
+                            <td>X</td>
+                        </tr>`;
+
+            $("#tblTreatment > tbody ").append(template);
+
+            renderSelect();
+            renderQuantity();
+
+        });
+
         $('.datepicker').datepicker({
             language: "es",
             autoclose: true,
