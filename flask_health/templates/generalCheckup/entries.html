@@ -73,11 +73,78 @@
     </div>
 </div>
 
-<form {% if registration is undefined %} action="{{ url_for('registrationEntries') }}" {% else %}
-    action="{{ url_for('registrationEntries',  id=registration.id ) }}" {% endif %} method=post class=add-entry>
+<form {% if registration is undefined %} action="{{ url_for('checkUpEntries') }}" {% else %}
+    action="{{ url_for('checkUpEntries',  id=orderResult.id ) }}" {% endif %} method=post class=add-entry>
 
 
+    <div class="col-md-12">
+        <div class="card mb-3">
+            <div class="card-header" style="
+            color: black;
+            font-size: 20px;
+            font-weight: bold;">
+                General Check Up
+            </div>
+            <div class="card-body">
+                {% for catalogCheckUp in catalogCheckUpList %}
+                <div class="form-group">
+                    <label for="Input{{ catalogCheckUp.id }}">{{ catalogCheckUp.name }}</label>
+                    <input type="text" class="form-control" id="input{{ catalogCheckUp.id }}"
+                        name="{{ catalogCheckUp.id }}" value="">
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
 
+
+    <div class="col-md-12">
+        <div class="card mb-3">
+            <div class="card-header" style="
+            color: black;
+            font-size: 20px;
+            font-weight: bold;">
+                Log
+            </div>
+            <div class="card-body">
+                <div class="form-group">
+                    <label for="InputDesc">Desc</label>
+                    <textarea class="form-control" id="InputDesc" name=desc
+                        rows="5">{% if orderResult is defined %}{{orderResult.desc}}{% endif %}</textarea>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-12">
+        <div class="card mb-3">
+            <div class="card-header" style="
+            color: black;
+            font-size: 20px;
+            font-weight: bold;">
+                Status
+            </div>
+            <div class="card-body">
+                <div class="form-group">
+                    <label for="inputStatus">Status</label>
+                    <select data-placeholder="Status" id="inputStatus" data-allow-clear="1" name="order_status">
+                        <option value=""></option>
+                        {% for orderStatus in orderStatusList %}
+                        {% if orderResult is defined and orderResult.order_status == orderStatus %}
+                        <option value="{{ orderStatus }}" selected>{{ orderStatus }}</option>
+                        {% else %}
+                        <option value="{{ orderStatus }}">{{ orderStatus }}</option>
+                        {% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <br />
 
     {% if registration is defined %}
     <button type="submit" class="btn btn-primary">Update</button>

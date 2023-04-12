@@ -52,6 +52,8 @@ def checkUpEntries(id=""):
         db.session.query(Catalog).filter(Catalog.category == "General Checkup").all()
     )
 
+    orderStatusList = ["Complete", "Cancel"]
+
     result = (
         db.session.query(Order, Patient, Doctor)
         .select_from(Order)
@@ -70,10 +72,43 @@ def checkUpEntries(id=""):
         patientResult = patient
         doctorResult = doctor
 
+    if request.method == "POST" and id != "":
+        orderResult.desc = request.form["desc"]
+        orderResult.order_steps = 2
+        orderResult.order_status = request.form["order_status"]
+
+        orderResult.updated_by = session.get("username")
+        orderResult.updated_at = datetime.datetime.now()
+
+        db.session.merge(orderResult)
+        db.session.commit()
+
+        Treatment.query.filter(Treatment.order_id == orderResult.id).delete()
+
+        for catalogCheckUp in catalogCheckUpList:
+
+            if len(request.form[catalogCheckUp.id]) > 0:
+                newTreatment = Treatment()
+                newTreatment.catalog_id = catalogCheckUp.id
+                newTreatment.id = str(uuid.uuid1())
+                newTreatment.order_id = orderResult.id
+                newTreatment.treatment_date = datetime.datetime.now()
+                newTreatment.value = request.form[catalogCheckUp.id]
+                newTreatment.quantity = 1
+                newTreatment.isDeleted = False
+                newTreatment.created_by = session.get("username")
+                newTreatment.created_at = datetime.datetime.now()
+                db.session.merge(newTreatment)
+
+        db.session.commit()
+
+        return redirect(url_for("checkUpList"))
+
     return render_template(
         "generalCheckup/entries.html",
         catalogCheckUpList=catalogCheckUpList,
         orderResult=orderResult,
         patientResult=patientResult,
         doctorResult=doctorResult,
+        orderStatusList=orderStatusList,
     )
