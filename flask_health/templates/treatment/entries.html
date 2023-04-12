@@ -1,0 +1,195 @@
+{% extends "layout.html" %}
+{% block body %}
+
+<br />
+<h2>Treatment</h2>
+<br />
+
+<style>
+    .card {
+        box-shadow: 0 1px 5px 0 rgba(0, 0, 0, .1), 0 1px 5px 0 rgba(0, 0, 0, .06);
+    }
+
+    .card {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+        word-wrap: break-word;
+        background-color: #fff;
+        background-clip: border-box;
+        border: 0 solid rgba(0, 0, 0, .125);
+        border-radius: .25rem;
+    }
+
+    .card-body {
+        flex: 1 1 auto;
+        min-height: 1px;
+        padding: 1rem;
+    }
+</style>
+
+
+<div class="col-md-12">
+    <div class="card mb-3">
+        <div class="card-header" style="
+        color: black;
+        font-size: 20px;
+        font-weight: bold;">
+            Patient Information
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-sm-3">
+                    <h6 class="mb-0">Full Name</h6>
+                </div>
+                <div class="col-sm-9 text-secondary">
+                    {{ patientResult.first_name + " "+patientResult.last_name }}
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-sm-3">
+                    <h6 class="mb-0">Sex</h6>
+                </div>
+                <div class="col-sm-9 text-secondary">
+                    {% if patientResult.sex == "0": %}
+                    Female
+                    {% else %}
+                    Male
+                    {% endif %}
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-sm-3">
+                    <h6 class="mb-0">Age</h6>
+                </div>
+                <div class="col-sm-9 text-secondary">
+                    {{ patientResult.calculate_age() }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="col-md-12">
+    <div class="card mb-3">
+        <div class="card-header" style="
+        color: black;
+        font-size: 20px;
+        font-weight: bold;">
+            General Check Up
+        </div>
+        <div class="card-body">
+            {% for catalogCheckUp in catalogCheckUpList %}
+
+
+            <div class="row">
+                <div class="col-sm-3">
+                    <h6 class="mb-0">{{ catalogCheckUp.name }}</h6>
+                </div>
+                <div class="col-sm-9 text-secondary">
+                    {% for treatresult in orderResult.treatments %}
+                    {% if treatresult.catalog_id==catalogCheckUp.id %}
+                    {{ treatresult.value }}
+                    {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+            <hr>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<form action="{{ url_for('checkUpEntries',  id=orderResult.id ) }}" method=post class=add-entry>
+
+
+    <div class="col-md-12">
+        <div class="card mb-3">
+            <div class="card-header" style="
+            color: black;
+            font-size: 20px;
+            font-weight: bold;">
+                Log
+            </div>
+            <div class="card-body">
+                <div class="form-group">
+                    <label for="InputDesc">Desc</label>
+                    <textarea class="form-control" id="InputDesc" name=desc
+                        rows="5">{% if orderResult is defined %}{{orderResult.desc | safe }}{% endif %}</textarea>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-12">
+        <div class="card mb-3">
+            <div class="card-header" style="
+            color: black;
+            font-size: 20px;
+            font-weight: bold;">
+                Status
+            </div>
+            <div class="card-body">
+                <div class="form-group">
+                    <label for="inputStatus">Status</label>
+                    <select data-placeholder="Status" id="inputStatus" data-allow-clear="1" name="order_status">
+                        <option value=""></option>
+                        {% for orderStatus in orderStatusList %}
+                        {% if orderResult is defined and orderResult.order_status == orderStatus %}
+                        <option value="{{ orderStatus }}" selected>{{ orderStatus }}</option>
+                        {% else %}
+                        <option value="{{ orderStatus }}">{{ orderStatus }}</option>
+                        {% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <br />
+
+    {% if orderResult.ordersteps == 3 %}
+    <button type="submit" class="btn btn-primary">Update</button>
+    {% else %}
+    <button type="submit" class="btn btn-primary">Create</button>
+    {% endif %}
+    <br />
+</form>
+
+<script>
+
+    $(function () {
+        $('select').each(function () {
+            $(this).select2({
+                theme: 'bootstrap4',
+                width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
+                placeholder: $(this).data('placeholder'),
+                allowClear: Boolean($(this).data('allow-clear')),
+                closeOnSelect: !$(this).attr('multiple'),
+            });
+        });
+    });
+
+
+    $('#inputPatient').on("change", function (e) {
+        console.log(this.value);
+    });
+
+    $(function () {
+        $('.datepicker').datepicker({
+            language: "es",
+            autoclose: true,
+            format: "dd/mm/yyyy"
+        });
+    });
+
+</script>
+
+{% endblock %}

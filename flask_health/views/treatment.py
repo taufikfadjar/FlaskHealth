@@ -5,6 +5,7 @@ from flask_health.models.patient import Patient
 from flask_health.models.doctor import Doctor
 from flask_health.models.treatment import Treatment
 from flask_health.models.order import Order
+from flask_health.models.catalog import Catalog
 import uuid, datetime, copy
 from flask_health.viewmodels.treatment import TreatmentViewModel
 from sqlalchemy.sql import and_, or_
@@ -41,4 +42,46 @@ def treatmentList():
         )
     return render_template(
         "treatment/list.html", treatmentResultList=treatmentResultList
+    )
+
+
+@app.route("/treatment/entry/<id>", methods=["GET", "POST"])
+def treatmentEntries(id=""):
+    if not session.get("logged_in"):
+        return redirect(url_for("login"))
+
+    catalogCheckUpList = (
+        db.session.query(Catalog).filter(Catalog.category == "General Checkup").all()
+    )
+
+    orderStatusList = ["Complete", "Cancel"]
+
+    result = (
+        db.session.query(Order, Patient, Doctor)
+        .select_from(Order)
+        .join(Patient)
+        .join(Doctor)
+        .filter(Order.id == id)
+        .all()
+    )
+
+    orderResult = None
+    patientResult = None
+    doctorResult = None
+
+    for order, patient, doctor in result:
+        orderResult = order
+        patientResult = patient
+        doctorResult = doctor
+
+    if orderResult.desc == None:
+        orderResult.desc = ""
+
+    return render_template(
+        "treatment/entries.html",
+        catalogCheckUpList=catalogCheckUpList,
+        orderResult=orderResult,
+        patientResult=patientResult,
+        doctorResult=doctorResult,
+        orderStatusList=orderStatusList,
     )

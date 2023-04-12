@@ -27,7 +27,7 @@
             <td>{{ treatmentResult.order_status }}</td>
             <td>
                 <button><a style="color: #000000;"
-                        href="{{ url_for('checkUpEntries' ,  id=treatmentResult.id) }}">Treatment</a></button>
+                        href="{{ url_for('treatmentEntries' ,  id=treatmentResult.id) }}">Treatment</a></button>
             </td>
         </tr>
         {% endfor %}
