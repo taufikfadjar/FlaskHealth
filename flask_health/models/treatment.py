@@ -16,6 +16,6 @@ class Treatment(db.Model):
     updated_by = db.Column(db.String(100))
 
     def __repr__(self):
-        return "<Entry id:{} order_id:{} catalog_id:{} price:{}>".format(
-            self.id, self.order_id, self.catalog_id, self.price
+        return "<Entry id:{} order_id:{} catalog_id:{} value:{}>".format(
+            self.id, self.order_id, self.catalog_id, self.value
         )

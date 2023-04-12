@@ -82,6 +82,10 @@ def treatmentEntries(id=""):
         patientResult = patient
         doctorResult = doctor
 
+    catalogCheckUpIds = []
+    for catalogCheckUp in catalogCheckUpList:
+        catalogCheckUpIds.append(catalogCheckUp.id)
+
     if request.method == "POST" and id != "":
 
         orderResult.desc = request.form["desc"]
@@ -97,10 +101,6 @@ def treatmentEntries(id=""):
 
         db.session.merge(orderResult)
         db.session.commit()
-
-        catalogCheckUpIds = []
-        for catalogCheckUp in catalogCheckUpList:
-            catalogCheckUpIds.append(catalogCheckUp.id)
 
         Treatment.query.filter(
             and_(
@@ -137,6 +137,14 @@ def treatmentEntries(id=""):
     if orderResult.desc == None:
         orderResult.desc = ""
 
+    getTreatmentresult = (
+        db.session.query(Treatment, Catalog)
+        .select_from(Treatment)
+        .join(Catalog)
+        .filter(and_(Treatment.order_id == id, Catalog.category != "General Checkup"))
+        .all()
+    )
+
     return render_template(
         "treatment/entries.html",
         catalogCheckUpList=catalogCheckUpList,
@@ -146,4 +154,5 @@ def treatmentEntries(id=""):
         orderStatusList=orderStatusList,
         catalogPrescriptionList=catalogPrescriptionList,
         catalogActionList=catalogActionList,
+        getTreatmentresult=getTreatmentresult,
     )

@@ -129,6 +129,65 @@
                     </thead>
                     <tbody>
 
+                        {% for getTreatment, getCatalog in getTreatmentresult %}
+                        <tr>
+                            <td>
+                                <select data-placeholder="Choose catalog" data-allow-clear="1" name="catalog_id">
+                                    <option value=""></option>
+                                    <optgroup label="Action">
+                                        {% for catalogAction in catalogActionList %}
+
+
+                                        {% if catalogAction.id == getTreatment.catalog_id %}
+                                        <option value="{{ catalogAction.id }}"
+                                            data-typeTreatment="{{ catalogAction.category }}"
+                                            data-price="{{ catalogAction.price }}" selected>{{catalogAction.name}}
+                                        </option>
+                                        {% else %}
+                                        <option value="{{ catalogAction.id }}"
+                                            data-typeTreatment="{{ catalogAction.category }}"
+                                            data-price="{{ catalogAction.price }}">{{catalogAction.name}}</option>
+                                        {% endif %}
+
+
+
+                                        {% endfor %}
+                                    </optgroup>
+                                    <optgroup label="Prescription">
+                                        {% for catalogPrescription in catalogPrescriptionList %}
+
+                                        {% if catalogPrescription.id == getTreatment.catalog_id %}
+                                        <option value="{{ catalogPrescription.id }}"
+                                            data-typeTreatment="{{ catalogPrescription.category }}"
+                                            data-price="{{ catalogPrescription.price }}" selected>{{
+                                            catalogPrescription.name
+                                            }}</option>
+                                        {% else %}
+                                        <option value="{{ catalogPrescription.id }}"
+                                            data-typeTreatment="{{ catalogPrescription.category }}"
+                                            data-price="{{ catalogPrescription.price }}">{{
+                                            catalogPrescription.name
+                                            }}</option>
+                                        {% endif %}
+
+
+                                        {% endfor %}
+                                    </optgroup>
+                                </select>
+                            </td>
+                            <td id="typeTreatment">{{ getCatalog.category }}</td>
+                            <td id="priceTreatment">{{ getCatalog.price }}</td>
+                            <td id="quantityTreatment">
+                                <input type="number" id="inputQuantityTreatment" style="width: 50px;"
+                                    name="catalog_quantity" value="{{ getTreatment.quantity }}">
+                            </td>
+                            <td id="totalTreatment">
+                                {{ getTreatment.value }}
+                            </td>
+                            <td onclick='removeLine(this)'>X</td>
+                        </tr>
+                        {% endfor %}
+
                     </tbody>
                 </table>
 
@@ -291,6 +350,9 @@
             renderQuantity();
 
         });
+
+        renderSelect();
+        renderQuantity();
 
         $('.datepicker').datepicker({
             language: "es",
