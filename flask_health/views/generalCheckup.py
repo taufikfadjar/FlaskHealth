@@ -82,7 +82,18 @@ def checkUpEntries(id=""):
         db.session.merge(orderResult)
         db.session.commit()
 
-        Treatment.query.filter(Treatment.order_id == orderResult.id).delete()
+        catalogCheckUpIds = []
+        for catalogCheckUp in catalogCheckUpList:
+            catalogCheckUpIds.append(catalogCheckUp.id)
+
+        Treatment.query.filter(
+            and_(
+                Treatment.order_id == orderResult.id,
+                Treatment.catalog_id.in_(catalogCheckUpIds),
+            )
+        ).delete()
+
+        db.session.commit()
 
         for catalogCheckUp in catalogCheckUpList:
 
