@@ -1,0 +1,42 @@
+{% extends "layout.html" %}
+
+{% block body %}
+
+<br />
+<h2><i class="fa fa-medkit" aria-hidden="true"></i> List Invoice</h2>
+<br>
+<br>
+
+<table id="data" class="table table-striped">
+    <thead>
+        <tr>
+            <th>Order Date</th>
+            <th>No Order</th>
+            <th>Patient</th>
+            <th>Doctor</th>
+            <th>Status</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for invoice in invoiceResultList %}
+        <tr>
+            <td>{{ invoice.order_date }}</td>
+            <td>{{ invoice.order_no }}</td>
+            <td>{{ invoice.patient_name }}</td>
+            <td>{{ invoice.doctor_name }}</td>
+            <td>{{ invoice.order_status }}</td>
+            <td>
+                <button><a style="color: #000000;"
+                        href="{{ url_for('invoiceEntries' ,  id=invoice.id) }}">Invoice</a></button>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<script>
+    $('#data').DataTable();
+</script>
+
+{% endblock %}

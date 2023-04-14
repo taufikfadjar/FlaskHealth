@@ -1,0 +1,258 @@
+{% extends "layout.html" %}
+{% block body %}
+
+<br />
+<h2>Invoice</h2>
+<br />
+
+<style>
+    .card {
+        box-shadow: 0 1px 5px 0 rgba(0, 0, 0, .1), 0 1px 5px 0 rgba(0, 0, 0, .06);
+    }
+
+    .card {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+        word-wrap: break-word;
+        background-color: #fff;
+        background-clip: border-box;
+        border: 0 solid rgba(0, 0, 0, .125);
+        border-radius: .25rem;
+    }
+
+    .card-body {
+        flex: 1 1 auto;
+        min-height: 1px;
+        padding: 1rem;
+    }
+</style>
+
+
+
+
+<div class="container" id="generatePdf">
+    <div class="card">
+        <div class="card-header">
+            Invoice
+            <strong>{{ orderResult.calculate_order_no() }}</strong>
+            <span class="float-right"> <strong>Date:</strong> {{ orderResult.order_date.strftime('%d-%B-%Y') }}</span>
+
+        </div>
+        <div class="card-body">
+            <div class="row mb-4">
+                <div class="col-sm-6">
+                    <h6 class="mb-3">From:</h6>
+                    <div>
+                        <strong>Flask Health</strong>
+                    </div>
+                    <div>Bekasi Raya</div>
+                    <div>West Java, Indonesia</div>
+                    <div>Email: info@flaskhealth.co.id</div>
+                    <div>Phone: +62 444 666 3333</div>
+                </div>
+
+                <div class="col-sm-6">
+                    <h6 class="mb-3">To:</h6>
+                    <div>
+                        <strong>{{ patientResult.first_name + " "+patientResult.last_name }}</strong>
+                    </div>
+                    <div>Payment Method : {{ orderResult.payment_method }}</div>
+                </div>
+
+
+
+            </div>
+
+            <div class="table-responsive-sm">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th class="center">#</th>
+                            <th>Item</th>
+                            <th>Type</th>
+
+                            <th class="right">Unit Cost</th>
+                            <th class="center">Qty</th>
+                            <th class="right">Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+
+
+                        {% for getTreatment, getCatalog in getTreatmentresult %}
+
+                        {% set kidSeatTotal = 1 %}
+                        <tr>
+
+                            <td class="center">1</td>
+                            <td class="left strong">{{ getCatalog.name }}</td>
+                            <td class="left" id="typeTreatment">{{ getCatalog.category }}</td>
+                            <td class="right" id="priceTreatment">
+                                {{ "{:,}".format(getCatalog.price) }}
+                            </td>
+                            <td class="center" id="quantityTreatment">
+                                {{ "{:,}".format(getTreatment.quantity |int) }}
+                            </td>
+                            <td class="right" id="totalTreatment">
+                                {{ "{:,}".format( getTreatment.value |int) }}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="row">
+                <div class="col-lg-4 col-sm-5">
+
+                </div>
+
+                <div class="col-lg-4 col-sm-5 ml-auto">
+                    <table class="table table-clear">
+                        <tbody>
+                            <tr>
+                                <td class="left">
+                                    <strong>Subtotal</strong>
+                                </td>
+                                <td class="right">{{ "{:,}".format( orderResult.totalPrice |int) }}</td>
+                            </tr>
+                            <tr>
+                                <td class="left">
+                                    <strong>Total</strong>
+                                </td>
+                                <td class="right">
+                                    <strong>{{ "{:,}".format( orderResult.totalPrice |int) }}</strong>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<br>
+<button type="button" id="buttonGeneratePdf" class="btn btn-primary" style="margin-left: 10px;">Generate Pdf</button>
+<br>
+<br>
+
+<form action="{{ url_for('invoiceEntries',  id=orderResult.id ) }}" method=post class=add-entry>
+
+    <div class="col-md-12">
+        <div class="card mb-3">
+            <div class="card-header" style="
+            color: black;
+            font-size: 20px;
+            font-weight: bold;">
+                Status
+            </div>
+            <div class="card-body">
+                <div class="form-group">
+                    <label for="inputStatus">Status</label>
+                    <select data-placeholder="Status" id="inputStatus" data-allow-clear="1" name="order_status">
+                        <option value=""></option>
+                        {% for orderStatus in orderStatusList %}
+                        {% if orderResult is defined and orderResult.order_status == orderStatus %}
+                        <option value="{{ orderStatus }}" selected>{{ orderStatus }}</option>
+                        {% else %}
+                        <option value="{{ orderStatus }}">{{ orderStatus }}</option>
+                        {% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <br />
+
+    {% if orderResult.ordersteps == 4 %}
+    <button type="submit" class="btn btn-primary" style="margin-left: 10px;">Update</button>
+    {% else %}
+    <button type="submit" class="btn btn-primary" style="margin-left: 10px;">Create</button>
+    {% endif %}
+    <br />
+</form>
+
+<script>
+
+    function renderSelect() {
+
+        $('select').each(function () {
+            $(this).select2({
+                theme: 'bootstrap4',
+                width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
+                placeholder: $(this).data('placeholder'),
+                allowClear: Boolean($(this).data('allow-clear')),
+                closeOnSelect: !$(this).attr('multiple'),
+            });
+        });
+
+        $('select').each(function () {
+            $(this).on("change", function (e) {
+                var optionSelected = $("option:selected", this);
+                var parent = $(this).closest('tr');
+                var type = $(optionSelected[0]).attr("data-typeTreatment");
+                parent.find("#typeTreatment").html(type);
+
+                var price = $(optionSelected[0]).attr("data-price");
+                parent.find("#priceTreatment").html(price);
+                parent.find("#inputQuantityTreatment").val(1);
+                parent.find("#totalTreatment").html(price);
+            });
+        });
+    }
+
+    function renderQuantity() {
+        $('input[id=inputQuantityTreatment]').on('input', function (e) {
+            try {
+                var parent = $(this).closest('tr');
+                var price = parent.find("#priceTreatment").html();
+                if (price.length > 0 && $(this).val().length > 0) {
+                    parent.find("#totalTreatment").html(price * $(this).val());
+                }
+
+            }
+            catch (err) {
+
+            }
+
+        });
+    }
+
+    function removeLine(element) {
+        var parent = $(element).closest('tr');
+        parent.remove();
+    }
+
+    $(function () {
+
+
+        var button = document.getElementById("buttonGeneratePdf");
+        var makepdf = document.getElementById("generatePdf");
+
+        button.addEventListener("click", function () {
+            html2pdf().from(makepdf).save();
+        });
+
+
+        renderSelect();
+        renderQuantity();
+
+        $('.datepicker').datepicker({
+            language: "es",
+            autoclose: true,
+            format: "dd/mm/yyyy"
+        });
+    });
+
+</script>
+
+{% endblock %}

@@ -16,4 +16,5 @@ from flask_health.views import (
     registration,
     generalCheckup,
     treatment,
+    invoice,
 )
