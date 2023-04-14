@@ -176,13 +176,13 @@
                                 </select>
                             </td>
                             <td id="typeTreatment">{{ getCatalog.category }}</td>
-                            <td id="priceTreatment">{{ getCatalog.price }}</td>
+                            <td id="priceTreatment">{{ "{:,}".format(getCatalog.price |int) }}</td>
                             <td id="quantityTreatment">
                                 <input type="number" id="inputQuantityTreatment" style="width: 50px;"
                                     name="catalog_quantity" value="{{ getTreatment.quantity }}">
                             </td>
                             <td id="totalTreatment">
-                                {{ getTreatment.value }}
+                                {{ "{:,}".format(getTreatment.value |int) }}
                             </td>
                             <td onclick='removeLine(this)'>X</td>
                         </tr>
@@ -275,9 +275,9 @@
                 parent.find("#typeTreatment").html(type);
 
                 var price = $(optionSelected[0]).attr("data-price");
-                parent.find("#priceTreatment").html(price);
+                parent.find("#priceTreatment").html(price.toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,"));
                 parent.find("#inputQuantityTreatment").val(1);
-                parent.find("#totalTreatment").html(price);
+                parent.find("#totalTreatment").html(price.toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,"));
             });
         });
     }
@@ -287,8 +287,9 @@
             try {
                 var parent = $(this).closest('tr');
                 var price = parent.find("#priceTreatment").html();
+                priceNumber = Number(price.replace(',', ''));
                 if (price.length > 0 && $(this).val().length > 0) {
-                    parent.find("#totalTreatment").html(price * $(this).val());
+                    parent.find("#totalTreatment").html((priceNumber * $(this).val()).toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,"));
                 }
 
             }
